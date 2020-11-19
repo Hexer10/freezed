@@ -22,11 +22,11 @@ import 'templates/from_json_template.dart';
 @immutable
 class CloneableProperty {
   CloneableProperty({
-    @required this.name,
-    @required this.type,
-    @required this.children,
-    @required this.associatedData,
-    @required this.genericParameters,
+    required this.name,
+    required this.type,
+    required this.children,
+    required this.associatedData,
+    required this.genericParameters,
   });
 
   final String name;
@@ -55,20 +55,20 @@ $runtimeType(
 @immutable
 class ConstructorDetails {
   ConstructorDetails({
-    @required this.name,
-    @required this.isConst,
-    @required this.isDefault,
-    @required this.redirectedName,
-    @required this.parameters,
-    @required this.impliedProperties,
-    @required this.fullName,
-    @required this.decorators,
-    @required this.withDecorators,
-    @required this.implementsDecorators,
-    @required this.hasJsonSerializable,
-    @required this.cloneableProperties,
-    @required this.canOverrideToString,
-    @required this.asserts,
+    required this.name,
+    required this.isConst,
+    required this.isDefault,
+    required this.redirectedName,
+    required this.parameters,
+    required this.impliedProperties,
+    required this.fullName,
+    required this.decorators,
+    required this.withDecorators,
+    required this.implementsDecorators,
+    required this.hasJsonSerializable,
+    required this.cloneableProperties,
+    required this.canOverrideToString,
+    required this.asserts,
   });
 
   final String name;
@@ -114,18 +114,17 @@ $runtimeType(
 @immutable
 class Data {
   Data({
-    @required this.name,
-    @required this.lateGetters,
-    @required this.needsJsonSerializable,
-    @required this.unionKey,
-    @required this.constructors,
-    @required this.genericsDefinitionTemplate,
-    @required this.genericsParameterTemplate,
-    @required this.commonProperties,
-    @required this.commonCloneableProperties,
-    @required this.shouldUseExtends,
-  })  : assert(constructors.isNotEmpty),
-        assert(unionKey != null);
+    required this.name,
+    required this.lateGetters,
+    required this.needsJsonSerializable,
+    required this.unionKey,
+    required this.constructors,
+    required this.genericsDefinitionTemplate,
+    required this.genericsParameterTemplate,
+    required this.commonProperties,
+    required this.commonCloneableProperties,
+    required this.shouldUseExtends,
+  })   : assert(constructors.isNotEmpty);
 
   final String name;
   final List<LateGetter> lateGetters;
@@ -159,8 +158,8 @@ $runtimeType(
 @immutable
 class _GlobalData {
   _GlobalData({
-    @required this.hasDiagnostics,
-    @required this.hasJson,
+    required this.hasDiagnostics,
+    required this.hasJson,
   });
 
   final bool hasJson;
@@ -181,15 +180,15 @@ class FreezedGenerator extends ParserGenerator<_GlobalData, Data, Freezed> {
   FreezedGenerator(this.configs);
 
   final Map<String, Object> configs;
-  final _computeElementDataCache = <ClassElement, Data>{};
+  final _computeElementDataCache = <ClassElement, Data?>{};
   final _parsedElementCheckSet = <ClassElement>{};
 
-  Data _computeElementDataFor(ParameterElement parameter) {
-    final parameterTypeElement = parameter?.type?.element;
+  Data? _computeElementDataFor(ParameterElement parameter) {
+    final parameterTypeElement = parameter.type?.element;
     if (parameterTypeElement == null) return null;
     if (parameterTypeElement is! ClassElement) return null;
 
-    final classElement = parameterTypeElement as ClassElement;
+    final classElement = parameterTypeElement;
 
     return _computeElementDataCache.putIfAbsent(classElement, () {
       if (!typeChecker.hasAnnotationOf(classElement)) return null;
@@ -331,7 +330,7 @@ class FreezedGenerator extends ParserGenerator<_GlobalData, Data, Freezed> {
                 .getParsedLibraryByElement(element.library)
                 .getElementDeclaration(element)
                 ?.node;
-            return ast.endToken.stringValue == ';';
+            return ast!.endToken.stringValue == ';';
           }
           return false;
         });
@@ -362,7 +361,7 @@ class FreezedGenerator extends ParserGenerator<_GlobalData, Data, Freezed> {
           ),
       ],
       needsJsonSerializable: needsJsonSerializable,
-      unionKey: configs.unionKey,
+      unionKey: configs.unionKey!,
       constructors: constructorsNeedsGeneration,
       genericsDefinitionTemplate:
           GenericsDefinitionTemplate.fromGenericElement(element.typeParameters),
@@ -418,7 +417,7 @@ class FreezedGenerator extends ParserGenerator<_GlobalData, Data, Freezed> {
         }
       }
 
-      MethodElement userDefinedToString;
+      MethodElement? userDefinedToString;
       for (final type in [
         element,
         ...element.allSupertypes
@@ -631,10 +630,10 @@ class LateGetter {
   final String source;
 
   LateGetter({
-    @required this.type,
-    @required this.name,
-    @required this.decorators,
-    @required this.source,
+    required this.type,
+    required this.name,
+    required this.decorators,
+    required this.source,
   });
 
   @override
@@ -655,7 +654,7 @@ ${type ?? 'dynamic'} get $name {
   }
 }
 
-String parseLateGetterSource(String source) {
+String? parseLateGetterSource(String source) {
   var parenthesis = 0;
 
   for (var i = 0; i < source.length; i++) {
@@ -683,7 +682,6 @@ String parseLateGetterSource(String source) {
 extension ShouldGenerateWhen on List<ConstructorDetails> {
   bool get shouldGenerateUnions {
     return where((element) =>
-        element.name != null &&
         element.name.isNotEmpty &&
         !element.name.startsWith('_')).isNotEmpty;
   }

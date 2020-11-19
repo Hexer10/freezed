@@ -1,7 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:freezed/src/freezed_generator.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 
 import '../utils.dart';
@@ -11,18 +10,18 @@ import 'prototypes.dart';
 
 class Concrete {
   Concrete({
-    @required this.constructor,
-    @required this.genericsDefinition,
-    @required this.genericsParameter,
-    @required this.allConstructors,
-    @required this.hasDiagnosticable,
-    @required this.shouldGenerateJson,
-    @required this.commonProperties,
-    @required this.lateGetters,
-    @required this.name,
-    @required this.unionKey,
-    @required this.copyWith,
-    @required this.shouldUseExtends,
+    required this.constructor,
+    required this.genericsDefinition,
+    required this.genericsParameter,
+    required this.allConstructors,
+    required this.hasDiagnosticable,
+    required this.shouldGenerateJson,
+    required this.commonProperties,
+    required this.lateGetters,
+    required this.name,
+    required this.unionKey,
+    required this.copyWith,
+    required this.shouldUseExtends,
   });
 
   final ConstructorDetails constructor;
@@ -375,13 +374,13 @@ extension IsNullable on ParameterElement {
 
 class Property {
   Property({
-    @required String type,
-    @required this.name,
-    @required this.decorators,
-    @required this.nullable,
-    @required this.defaultValueSource,
-    @required this.hasJsonKey,
-    @required this.doc,
+    required String type,
+    required this.name,
+    required this.decorators,
+    required this.nullable,
+    required this.defaultValueSource,
+    required this.hasJsonKey,
+    required this.doc,
   }) : type = type ?? 'dynamic';
 
   factory Property.fromParameter(ParameterElement element) {
@@ -400,7 +399,7 @@ class Property {
       type: parseTypeSource(element),
       decorators: parseDecorators(element.metadata),
       nullable: element.isNullable,
-      defaultValueSource: defaultValue,
+      defaultValueSource: defaultValue!,
       hasJsonKey: element.hasJsonKey,
     );
   }
@@ -429,11 +428,11 @@ class Property {
 
 class Getter {
   Getter({
-    @required String type,
-    @required this.name,
-    @required this.decorators,
-    @required this.nullable,
-    @required this.doc,
+    required String type,
+    required this.name,
+    required this.decorators,
+    required this.nullable,
+    required this.doc,
   }) : type = type ?? 'dynamic';
 
   final String type;
@@ -457,7 +456,7 @@ extension PropertiesAsGetters on List<Property> {
 extension DefaultValue on ParameterElement {
   /// Returns the sources of the default value associated with a `@Default`,
   /// or `null` if no `@Default` are specified.
-  String get defaultValue {
+  String? get defaultValue {
     const matcher = TypeChecker.fromRuntime(Default);
 
     for (final meta in metadata) {
@@ -500,5 +499,5 @@ String parseTypeSource(VariableElement element) {
       type = match?.group(1) ?? type;
     }
   }
-  return type;
+  return type!;
 }

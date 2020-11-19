@@ -4,7 +4,7 @@ import 'package:analyzer/dart/element/element.dart';
 String documentationOfParameter(ParameterElement parameter) {
   final builder = StringBuffer();
 
-  for (Token token = parameter.session
+  for (Token? token = parameter.session
           .getParsedLibraryByElement(parameter.library)
           ?.getElementDeclaration(parameter)
           ?.node

@@ -1,7 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:freezed/src/freezed_generator.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'parameter_template.dart';
@@ -38,7 +37,7 @@ extension FreezedElementAnnotation on ElementAnnotation {
   }
 }
 
-String getRedirectedConstructorName(String source) {
+String? getRedirectedConstructorName(String source) {
   var firstOpeningParenthesisIndex = 0;
   while (firstOpeningParenthesisIndex < source.length &&
       source[firstOpeningParenthesisIndex] != '(') {
@@ -89,8 +88,8 @@ String maybeMapPrototype(List<ConstructorDetails> allConstructors,
 String _mapPrototype(
   List<ConstructorDetails> allConstructors,
   GenericsParameterTemplate genericParameters, {
-  @required bool areCallbacksRequired,
-  @required String name,
+  required bool areCallbacksRequired,
+  required String name,
 }) {
   return _unionPrototype(
     allConstructors,
@@ -114,8 +113,8 @@ String _mapPrototype(
 
 String _whenPrototype(
   List<ConstructorDetails> allConstructors, {
-  @required bool areCallbacksRequired,
-  @required String name,
+  required bool areCallbacksRequired,
+  required String name,
 }) {
   return _unionPrototype(
     allConstructors,
@@ -134,9 +133,9 @@ String _whenPrototype(
 
 String _unionPrototype(
   List<ConstructorDetails> allConstructors, {
-  @required bool areCallbacksRequired,
-  @required String name,
-  @required ParametersTemplate Function(ConstructorDetails) ctor2parameters,
+  required bool areCallbacksRequired,
+  required String name,
+  required ParametersTemplate Function(ConstructorDetails) ctor2parameters,
 }) {
   final buffer =
       StringBuffer('@optionalTypeArgs Result $name<Result extends Object>(');
@@ -178,7 +177,5 @@ bool isDefaultConstructor(ConstructorElement constructor) {
 }
 
 String constructorNameToCallbackName(String constructorName) {
-  return constructorName == null || constructorName.isEmpty
-      ? '\$default'
-      : constructorName;
+  return constructorName.isEmpty ? '\$default' : constructorName;
 }
